@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncoding.backend.test.course.dao.enroll.MEnrollMapper">
+    <resultMap id="EnrollsMap" type="com.ncoding.backend.test.course.core.Enroll">
+        <id     column="tsnr_uid"              property="uid"            javaType="long"/>
+        <result column="tsnr_status"           property="status"         javaType="int"/>
+        <result column="tsnr_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsnr_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+    </resultMap>
+
+    <resultMap id="SimpleEnrollMap" type="com.ncoding.backend.test.course.core.Enroll">
+        <id     column="tsnr_uid"              property="uid"            javaType="long"/>
+        <result column="tsnr_status"           property="status"         javaType="int"/>
+        <result column="tsnr_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsnr_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+
+        <association column="tsst" property="student" javaType="com.ncoding.backend.test.course.core.Student">
+            <id     column="tsst_uid"              property="uid"            javaType="long"/>
+            <result column="tsst_status"           property="status"         javaType="int"/>
+            <result column="tsst_first_name"       property="firstName"      javaType="string"/>
+            <result column="tsst_last_name"        property="lastName"       javaType="string"/>
+            <result column="tsst_address"          property="address"        javaType="string"/>
+            <result column="tsst_mobile_phone"     property="mobilePhone"    javaType="string"/>
+        </association>
+
+        <association column="tscr" property="course" javaType="com.ncoding.backend.test.course.core.Course">
+            <id     column="tscr_uid"              property="uid"            javaType="long"/>
+            <result column="tscr_status"           property="status"         javaType="int"/>
+            <result column="tscr_price"            property="price"          javaType="double"/>
+            <result column="tscr_title"            property="title"          javaType="string"/>
+            <result column="tscr_description"      property="description"    javaType="string"/>
+        </association>
+    </resultMap>
+
+    <select id="getRecordById" resultMap="SimpleEnrollMap">
+        <![CDATA[
+            SELECT *
+              FROM tsnr_enroll
+         LEFT JOIN tsst_student
+                ON tsnr_tsst_uid = tsst_uid
+         LEFT JOIN tscr_course
+                ON tsnr_tscr_uid = tscr_uid
+        ]]>
+        <where>
+               AND tsnr_uid = #{recordId}
+        </where>
+    </select>
+
+    <select id="getAllRecords" resultMap="EnrollsMap">
+        <![CDATA[
+            SELECT *
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+          ORDER BY tsnr_uid
+        ]]>
+        <if test="limit != null">
+             LIMIT ${limit} OFFSET ${offset}
+        </if>
+    </select>
+
+    <select id="getCountAllRecords" resultType="int">
+        <![CDATA[
+            SELECT COUNT(DISTINCT tsnr_uid)
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+        ]]>
+    </select>
+
+    <sql id="sqlGetAllRecords">
+        <![CDATA[
+            SELECT *
+              FROM tsnr_enroll
+        ]]>
+        <where>
+            <if test="recordStatus != null">
+               AND tsnr_status = #{recordStatus}
+            </if>
+            <if test="studentId != null">
+               AND tsnr_tsst_uid = #{studentId}
+            </if>
+            <if test="courseId != null">
+               AND tsnr_tscr_uid = #{courseId}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="saveRecord" useGeneratedKeys="true" keyProperty="uid">
+        <![CDATA[
+            INSERT INTO tsnr_enroll
+                       (tsnr_uid,
+                        tsnr_tsst_uid,
+                        tsnr_tscr_uid,
+                        tsnr_status)
+                VALUES (#{enroll.uid},
+                        #{enroll.student.uid},
+                        #{enroll.course.uid},
+                        #{student.status});
+        ]]>
+    </insert>
+
+    <update id="updateRecord">
+        <![CDATA[
+          UPDATE tsnr_enroll
+        ]]>
+        <set>
+            <if test="enroll.student != null and enroll.student.uid != null">
+                 tsnr_tsst_uid = #{enroll.student.uid},
+            </if>
+            <if test="enroll.course != null and enroll.course.uid != null">
+                 tsnr_tsct_uid = #{enroll.course.uid},
+            </if>
+            <if test="student.status != null">
+                 tsnr_status = #{student.status},
+            </if>
+                 tsnr_last_update_date = CURRENT_TIMESTAMP
+        </set>
+        <where>
+                 tsnr_uid = #{student.uid}
+        </where>
+    </update>
+
+    <delete id="deleteRecord">
+        <![CDATA[
+         UPDATE tsnr_enroll
+        ]]>
+        <set>
+                tsnr_status = 0,
+                tsnr_last_update_date = CURRENT_TIMESTAMP
+        </set>
+        <where>
+                tsnr_uid = #{enroll.uid}
+        </where>
+    </delete>
+</mapper>
