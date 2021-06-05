@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncoding.backend.test.course.dao.category.MCategoryMapper">
+    <resultMap id="CategoriesMap" type="com.ncoding.backend.test.course.core.Category">
+        <id     column="tsct_uid"              property="uid"            javaType="long"/>
+        <result column="tsct_status"           property="status"         javaType="int"/>
+        <result column="tsct_name"             property="name"           javaType="string"/>
+        <result column="tsct_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsct_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+    </resultMap>
+
+    <resultMap id="SimpleCategoryMap" type="com.ncoding.backend.test.course.core.Category">
+        <id     column="tsct_uid"              property="uid"            javaType="long"/>
+        <result column="tsct_status"           property="status"         javaType="int"/>
+        <result column="tsct_name"             property="name"           javaType="string"/>
+        <result column="tsct_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsct_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+    </resultMap>
+
+    <select id="getRecordById" resultMap="SimpleCategoryMap">
+        <![CDATA[
+            SELECT *
+              FROM tsct_category
+        ]]>
+        <where>
+               AND tsct_uid = #{recordId}
+        </where>
+    </select>
+
+    <select id="getAllRecords" resultMap="CategoriesMap">
+        <![CDATA[
+            SELECT *
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+          ORDER BY tsct_uid
+        ]]>
+        <if test="limit != null">
+             LIMIT ${limit} OFFSET ${offset}
+        </if>
+    </select>
+
+    <select id="getCountAllRecords" resultType="int">
+        <![CDATA[
+            SELECT COUNT(DISTINCT tsct_uid)
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+        ]]>
+    </select>
+
+    <sql id="sqlGetAllRecords">
+        <![CDATA[
+            SELECT *
+              FROM tsct_category
+        ]]>
+        <where>
+            <if test="recordStatus != null">
+               AND tsct_status = #{recordStatus}
+            </if>
+            <if test="recordName != null">
+               AND tsct_name LIKE '%' || #{recordName} || '%'
+            </if>
+        </where>
+    </sql>
+</mapper>

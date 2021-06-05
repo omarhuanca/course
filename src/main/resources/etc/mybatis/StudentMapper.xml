@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncoding.backend.test.course.dao.student.MStudentMapper">
+    <resultMap id="StudentsMap" type="com.ncoding.backend.test.course.core.Student">
+        <id     column="tsst_uid"              property="uid"            javaType="long"/>
+        <result column="tsst_status"           property="status"         javaType="int"/>
+        <result column="tsst_first_name"       property="firstName"      javaType="string"/>
+        <result column="tsst_last_name"        property="lastName"       javaType="string"/>
+        <result column="tsst_address"          property="address"        javaType="string"/>
+        <result column="tsst_mobile_phone"     property="mobilePhone"    javaType="string"/>
+        <result column="tsst_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsst_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+    </resultMap>
+
+    <resultMap id="SimpleStudentMap" type="com.ncoding.backend.test.course.core.Student">
+        <id     column="tsst_uid"              property="uid"            javaType="long"/>
+        <result column="tsst_status"           property="status"         javaType="int"/>
+        <result column="tsst_first_name"       property="firstName"      javaType="string"/>
+        <result column="tsst_last_name"        property="lastName"       javaType="string"/>
+        <result column="tsst_address"          property="address"        javaType="string"/>
+        <result column="tsst_mobile_phone"     property="mobilePhone"    javaType="string"/>
+        <result column="tsst_create_date"      property="createDate"     javaType="java.sql.Timestamp"/>
+        <result column="tsst_last_update_date" property="lastUpdateDate" javaType="java.sql.Timestamp"/>
+
+        <collection property="listEnroll" ofType="com.ncoding.backend.test.course.core.Enroll" javaType="java.util.List">
+            <id column="tsst_uid" javaType="long"/>
+            <id column="tscr_uid" javaType="long"/>
+
+            <result property="status"     column="tsnr_status"      javaType="int"/>
+
+            <association column="tscr_uid" property="course" javaType="com.ncoding.backend.test.course.core.Course">
+                 <id     column="tscr_uid"              property="uid"            javaType="long"/>
+                 <result column="tscr_status"           property="status"         javaType="int"/>
+                 <result column="tscr_price"            property="price"          javaType="double"/>
+                 <result column="tscr_title"            property="title"          javaType="string"/>
+                 <result column="tscr_description"      property="description"    javaType="string"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="getRecordById" resultMap="SimpleStudentMap">
+        <![CDATA[
+            SELECT *
+              FROM tsst_student
+         LEFT JOIN tsnr_enroll
+                ON tsst_uid = tsnr_tsst_uid
+         LEFT JOIN tscr_course
+                ON tsnr_tscr_uid = tscr_uid
+        ]]>
+        <where>
+               AND tsst_uid = #{recordId}
+        </where>
+    </select>
+
+    <select id="getAllRecords" resultMap="StudentsMap">
+        <![CDATA[
+            SELECT *
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+          ORDER BY tsst_uid
+        ]]>
+        <if test="limit != null">
+             LIMIT ${limit} OFFSET ${offset}
+        </if>
+    </select>
+
+    <select id="getCountAllRecords" resultType="int">
+        <![CDATA[
+            SELECT COUNT(DISTINCT tsst_uid)
+              FROM (
+        ]]>
+        <include refid="sqlGetAllRecords"/>
+        <![CDATA[
+                   ) AS records
+        ]]>
+    </select>
+
+    <sql id="sqlGetAllRecords">
+        <![CDATA[
+            SELECT *
+              FROM tsst_student
+        ]]>
+        <where>
+            <if test="recordStatus != null">
+               AND tsst_status = #{recordStatus}
+            </if>
+            <if test="recordFirstName != null">
+               AND tsst_fist_name LIKE '%' || #{recordFirstName} || '%'
+            </if>
+            <if test="recordLastName != null">
+               AND tsst_last_name LIKE '%' || #{recordLastName} || '%'
+            </if>
+        </where>
+    </sql>
+
+    <insert id="saveRecord" useGeneratedKeys="true" keyProperty="uid">
+        <![CDATA[
+            INSERT INTO tsst_student
+                       (tsst_uid,
+                        tsst_status,
+                        tsst_first_name,
+                        tsst_last_name,
+                        tsst_address,
+                        tsst_mobile_phone)
+                VALUES (#{student.uid},
+                        #{student.status},
+                        #{student.firstName},
+                        #{student.lastName},
+                        #{student.address},
+                        #{student.mobilePhone});
+        ]]>
+    </insert>
+
+    <update id="updateRecord">
+        <![CDATA[
+          UPDATE tsst_student
+        ]]>
+        <set>
+            <if test="student.status != null">
+                 tsst_status = #{student.status},
+            </if>
+            <if test="student.firstName != null">
+                 tsst_first_name = #{student.firstName},
+            </if>
+            <if test="student.lastName != null">
+                 tsst_last_first_name = #{student.lastName},
+            </if>
+            <if test="student.address != null">
+                 tsst_address = #{student.address},
+            </if>
+            <if test="student.mobilePhone != null">
+                 tsst_mobile_phone = #{student.mobilePhone},
+            </if>
+                 tsst_last_update_date = CURRENT_TIMESTAMP
+        </set>
+        <where>
+                 tsst_uid = #{student.uid}
+        </where>
+    </update>
+</mapper>

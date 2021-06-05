@@ -7,7 +7,7 @@ CREATE TABLE tsst_student (
   tsst_first_name       VARCHAR(70)             NOT NULL,
   tsst_last_name        VARCHAR(70)             NOT NULL,
   tsst_address          VARCHAR(500)                NULL,
-  tsst_mobile_phone     VARCHAR(8)                  NULL,
+  tsst_mobile_phone     VARCHAR(11)                 NULL,
   tsst_create_date      TIMESTAMP DEFAULT NOW() NOT NULL,
   tsst_last_update_date TIMESTAMP DEFAULT NOW() NOT NULL,
   PRIMARY KEY (tsst_uid)
@@ -67,3 +67,31 @@ CREATE TABLE tsnr_enroll (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
+
+/* **********************************************
+ * REFERENCE DATA                               *
+ ************************************************/
+INSERT INTO tsct_category(tsct_uid, tsct_status, tsct_name)
+ VALUES (10, 1, 'UX/UI'),
+        (11, 1, 'Programming'),
+        (12, 1, 'DevOps'),
+        (13, 1, 'QA');
+
+
+
+INSERT INTO tsst_student(tsst_uid, tsst_status, tsst_first_name, tsst_last_name, tsst_address, tsst_mobile_phone)
+ VALUES (20, 1, 'mauricio', 'morales', 'Av Suecia', '59172731406'),
+        (21, 1, 'pablo', 'flores', '', '');
+
+
+INSERT INTO tscr_course(tscr_uid, tscr_tsct_uid, tscr_status, tscr_price, tscr_title, tscr_description)
+ VALUES (30, 11, 1, 15.20, 'React Basic', 'User state of Redux'),
+        (31, 12, 1, 60.99, 'Docker advace', 'Use command to generate application alone on Java, Python and NodeJS');
+
+
+
+INSERT INTO tsnr_enroll(tsnr_uid, tsnr_tsst_uid, tsnr_tscr_uid, tsnr_status)
+ VALUES (40, 20, 30, 1),
+        (41, 20, 31, 1);
+
+
