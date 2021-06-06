@@ -1,7 +1,5 @@
 package com.ncoding.backend.test.course.dto;
 
-import java.sql.Timestamp;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -11,9 +9,6 @@ import com.ncoding.backend.test.course.core.Enroll;
 import com.ncoding.backend.test.course.core.Student;
 
 public class EnrollDTOV {
-
-    @Min(value = 0, message = "The id cannot be less than 0.")
-    private Long uid;
 
     @NotNull(message = "The student is not valid.")
     private Student student;
@@ -25,22 +20,10 @@ public class EnrollDTOV {
     @Max(1)
     private Integer status;
 
-    private Timestamp createDate;
-
-    private Timestamp lastUpdateDate;
-
     public void copyCoreObject(Enroll object) {
         object.setStudent(student);
         object.setCourse(course);
         object.setStatus(status);
-    }
-
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
     }
 
     public Student getStudent() {
@@ -65,21 +48,5 @@ public class EnrollDTOV {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public Timestamp getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public void setLastUpdateDate(Timestamp lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
     }
 }

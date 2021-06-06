@@ -31,8 +31,18 @@ import com.ncoding.backend.test.course.util.AElog;
 import com.ncoding.backend.test.course.util.AEutil;
 import com.ncoding.backend.test.course.util.exception.response.custom.CustomRuntimeException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/courses")
+@Tag(name = "courses", description = "the course API")
 public class CourseResource {
 
     private final Logger logger = LoggerFactory.getLogger(CourseResource.class);
@@ -43,6 +53,10 @@ public class CourseResource {
     @Autowired
     private CourseService service;
 
+    @Operation(summary = "Get all courses")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "found foos", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Course.class))) }),
+            @ApiResponse(responseCode = "404", description = "No Courses found", content = @Content) })
     @GetMapping
     public ResponseEntity<Object> findAllObjects(@Nullable Integer status, @Nullable Double price,
             @Nullable String title, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
@@ -53,8 +67,7 @@ public class CourseResource {
         HttpHeaders responseHeaders = new HttpHeaders();
         requestLog(request);
 
-        objectList = service.getAllObjects(ofNullable(status), ofNullable(price), ofNullable(title), pageSize,
-                page);
+        objectList = service.getAllObjects(ofNullable(status), ofNullable(price), ofNullable(title), pageSize, page);
         totalRecords = service.getCountAllObjects(ofNullable(status), ofNullable(price), ofNullable(title));
 
         responseHeaders.set("X-Total-Count", totalRecords.toString());
@@ -62,8 +75,16 @@ public class CourseResource {
         return new ResponseEntity<Object>(objectList, responseHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get a course by course id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "found the course", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<Object> findById(
+            @Parameter(description = "id of course to be searched") @PathVariable("id") Long id,
+            HttpServletRequest request) {
 
         Course object;
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -83,8 +104,15 @@ public class CourseResource {
         return new ResponseEntity<Object>(object, responseHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "Create a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "course created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
+            @ApiResponse(responseCode = "400", description = "Wrong Request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
     @PostMapping
-    public ResponseEntity<Object> saveObject(@Valid @RequestBody CourseDTOV objectDTOV, HttpServletRequest request) {
+    public ResponseEntity<Object> saveObject(
+            @Parameter(description = "course object to be created") @Valid @RequestBody CourseDTOV objectDTOV,
+            HttpServletRequest request) {
 
         Course object = new Course();
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -102,8 +130,16 @@ public class CourseResource {
         return new ResponseEntity<Object>(object, responseHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "Update a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
+            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateObject(@Valid @RequestBody CourseDTOV objectDTOV, @PathVariable("id") Long id,
+    public ResponseEntity<Object> updateObject(
+            @Parameter(description = "course object to be updated") @Valid @RequestBody CourseDTOV objectDTOV,
+            @Parameter(description = "id of course to be updated") @PathVariable("id") Long id,
             HttpServletRequest request) {
 
         Course object = new Course();
@@ -116,20 +152,28 @@ public class CourseResource {
                 objectDTOV.copyCoreObject(object);
                 object = service.update(object);
             } else {
-                throw new CustomRuntimeException(HttpStatus.NOT_FOUND, 404, "Operacion fallida",
-                        "No existe el registro que desea actualizar.");
+                throw new CustomRuntimeException(HttpStatus.NOT_FOUND, 404, "Fail request",
+                        "There isn't record you want update.");
             }
         } else {
-            throw new CustomRuntimeException(HttpStatus.BAD_REQUEST, 400, "Solicitud incorrecta",
-                    "Existe un error en el/los parámetro(s).");
+            throw new CustomRuntimeException(HttpStatus.BAD_REQUEST, 400, "Wrong request",
+                    "There are error belongs params.");
         }
 
         responseHeaders.set("Custom-Message", "HTTP/1.1 200 OK");
         return new ResponseEntity<Object>(object, responseHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "course deleted", content = {
+                    @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteObject(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<Object> deleteObject(
+            @Parameter(description = "id of course to be deleted") @PathVariable("id") Long id,
+            HttpServletRequest request) {
 
         Course object = new Course();
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -141,7 +185,7 @@ public class CourseResource {
                 service.delete(object);
             } else {
                 throw new CustomRuntimeException(HttpStatus.NOT_FOUND, 404, "Fail request",
-                        "There isn't record you want update.");
+                        "There isn't record you want delete.");
             }
         } else {
             throw new CustomRuntimeException(HttpStatus.BAD_REQUEST, 400, "Wrong request",

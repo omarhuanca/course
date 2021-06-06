@@ -25,8 +25,18 @@ import com.ncoding.backend.test.course.util.AElog;
 import com.ncoding.backend.test.course.util.AEutil;
 import com.ncoding.backend.test.course.util.exception.response.custom.CustomRuntimeException;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+
 @RestController
 @RequestMapping("/api/v1/categories")
+@Tag(name = "categories", description = "the category API")
 public class CategoryResource {
 
     private final Logger logger = LoggerFactory.getLogger(CategoryResource.class);
@@ -37,6 +47,10 @@ public class CategoryResource {
     @Autowired
     private CategoryService service;
 
+    @Operation(summary = "Get all categories")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "found categories", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Category.class))) }),
+            @ApiResponse(responseCode = "404", description = "No Categories found", content = @Content) })
     @GetMapping
     public ResponseEntity<Object> findAllObjects(@Nullable Integer status, @Nullable String name,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
@@ -55,8 +69,15 @@ public class CategoryResource {
         return new ResponseEntity<Object>(objectList, responseHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable("id") Long id, HttpServletRequest request) {
+    @Operation(summary = "Get a category by category id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "found the category", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> findById(
+            @Parameter(description = "id of category to be searched") @PathVariable("id") Long id,
+            HttpServletRequest request) {
 
         Category object;
         HttpHeaders responseHeaders = new HttpHeaders();

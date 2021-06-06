@@ -1,7 +1,5 @@
 package com.ncoding.backend.test.course.dto;
 
-import java.sql.Timestamp;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -11,9 +9,6 @@ import com.ncoding.backend.test.course.core.Category;
 import com.ncoding.backend.test.course.core.Course;
 
 public class CourseDTOV {
-
-    @Min(value = 0, message = "The id cannot be less than 0.")
-    private Long uid;
 
     @NotNull(message = "The category is not valid.")
     private Category category;
@@ -33,24 +28,12 @@ public class CourseDTOV {
     @Size(max = 500, message = "The description should be greather than 500 characters.")
     private String description;
 
-    private Timestamp createDate;
-
-    private Timestamp lastUpdateDate;
-
     public void copyCoreObject(Course object) {
         object.setCategory(category);
         object.setStatus(status);
         object.setPrice(price);
         object.setTitle(title);
         object.setDescription(description);
-    }
-
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
     }
 
     public Category getCategory() {
@@ -91,21 +74,5 @@ public class CourseDTOV {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public Timestamp getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public void setLastUpdateDate(Timestamp lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
     }
 }
