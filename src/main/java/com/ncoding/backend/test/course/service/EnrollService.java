@@ -1,6 +1,5 @@
 package com.ncoding.backend.test.course.service;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +11,7 @@ import com.ncoding.backend.test.course.core.Enroll;
 import com.ncoding.backend.test.course.core.Student;
 import com.ncoding.backend.test.course.dao.enroll.REnrollRepository;
 import com.ncoding.backend.test.course.util.exception.RepositoryException;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
 
 @Service
 public class EnrollService {
@@ -55,12 +55,12 @@ public class EnrollService {
 
     private void verifyForeignKey(Enroll object) {
         Student student = studentService.getObjectById(Optional.ofNullable(object.getStudent().getUid()));
-        if (null == student) {
-            throw new InvalidParameterException("The student id does not exist.");
+        if (null == student || student.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
+            throw new CustomBadRequestException("The student id does not exist or student is disabled.");
         }
         Course course = courseService.getObjectById(Optional.ofNullable(object.getCourse().getUid()));
-        if (null == course) {
-            throw new InvalidParameterException("The course id does not exist.");
+        if (null == course || course.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
+            throw new CustomBadRequestException("The course id does not exist or student is disabled.");
         }
     }
 }

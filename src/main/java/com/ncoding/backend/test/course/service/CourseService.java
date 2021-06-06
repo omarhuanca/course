@@ -1,6 +1,5 @@
 package com.ncoding.backend.test.course.service;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import com.ncoding.backend.test.course.core.Category;
 import com.ncoding.backend.test.course.core.Course;
 import com.ncoding.backend.test.course.dao.course.RCourseRepository;
 import com.ncoding.backend.test.course.util.exception.RepositoryException;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
 
 @Service
 public class CourseService {
@@ -51,8 +51,8 @@ public class CourseService {
 
     private void verifyForeignKey(Course object) {
         Category category = categoryService.getObjectById(Optional.ofNullable(object.getCategory().getUid()));
-        if (null == category) {
-            throw new InvalidParameterException("The category id does not exist.");
+        if (null == category || category.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
+            throw new CustomBadRequestException("The category id does not exist or category is disable.");
         }
     }
 }

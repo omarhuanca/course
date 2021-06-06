@@ -74,6 +74,10 @@ public class Enroll {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    public Boolean verifyStatusEnable(Integer otherStatus) {
+        return status.equals(otherStatus);
+    }
+
     @Override
     public boolean equals(Object obj) {
         boolean response = false;

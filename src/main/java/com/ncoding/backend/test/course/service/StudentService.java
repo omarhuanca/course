@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ncoding.backend.test.course.core.Student;
 import com.ncoding.backend.test.course.dao.student.RStudentRepository;
 import com.ncoding.backend.test.course.util.exception.RepositoryException;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
 
 @Service
 public class StudentService {
@@ -34,6 +35,9 @@ public class StudentService {
     }
 
     public Student save(Student object) throws RepositoryException {
+        if (object.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
+            throw new CustomBadRequestException("The student is disable.");
+        }
         return repository.save(object);
     }
 
