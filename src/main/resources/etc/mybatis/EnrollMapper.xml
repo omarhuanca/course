@@ -101,7 +101,7 @@
                 VALUES (#{enroll.uid},
                         #{enroll.student.uid},
                         #{enroll.course.uid},
-                        #{student.status});
+                        #{enroll.status});
         ]]>
     </insert>
 
@@ -114,15 +114,15 @@
                  tsnr_tsst_uid = #{enroll.student.uid},
             </if>
             <if test="enroll.course != null and enroll.course.uid != null">
-                 tsnr_tsct_uid = #{enroll.course.uid},
+                 tsnr_tscr_uid = #{enroll.course.uid},
             </if>
-            <if test="student.status != null">
-                 tsnr_status = #{student.status},
+            <if test="enroll.status != null">
+                 tsnr_status = #{enroll.status},
             </if>
                  tsnr_last_update_date = CURRENT_TIMESTAMP
         </set>
         <where>
-                 tsnr_uid = #{student.uid}
+                 tsnr_uid = #{enroll.uid}
         </where>
     </update>
 

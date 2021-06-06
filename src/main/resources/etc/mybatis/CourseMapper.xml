@@ -134,7 +134,7 @@
                  tscr_status = #{course.status},
             </if>
             <if test="course.price != null">
-                 tscr_first_name = #{course.price},
+                 tscr_price = #{course.price},
             </if>
             <if test="course.title != null">
                  tscr_title = #{course.title},

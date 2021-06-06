@@ -127,7 +127,7 @@
                  tsst_first_name = #{student.firstName},
             </if>
             <if test="student.lastName != null">
-                 tsst_last_first_name = #{student.lastName},
+                 tsst_last_name = #{student.lastName},
             </if>
             <if test="student.address != null">
                  tsst_address = #{student.address},

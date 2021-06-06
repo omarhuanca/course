@@ -2,6 +2,7 @@ package com.ncoding.backend.test.course.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,15 +18,18 @@ public class CourseDTOV {
     @Max(1)
     private Integer status;
 
+    @NotNull(message = "The price is not valid.")
     @Min(value = 0, message = "The price cannot be less than 0.")
     private Double price;
 
     @NotNull(message = "The title is not valid.")
     @Size(max = 30, message = "The title no should be greather than 30 characters.")
+    @NotBlank(message = "The title is not valid.")
     private String title;
 
     @NotNull(message = "The description not valid.")
     @Size(max = 500, message = "The description should be greather than 500 characters.")
+    @NotBlank(message = "The description is not valid.")
     private String description;
 
     public void copyCoreObject(Course object) {
