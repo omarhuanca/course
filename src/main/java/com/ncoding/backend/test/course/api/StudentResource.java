@@ -28,6 +28,8 @@ import com.ncoding.backend.test.course.dto.StudentDTOV;
 import com.ncoding.backend.test.course.service.StudentService;
 import com.ncoding.backend.test.course.util.AEutil;
 import com.ncoding.backend.test.course.util.AElog;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomNotFoundException;
 import com.ncoding.backend.test.course.util.exception.response.custom.CustomRuntimeException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,8 +81,8 @@ public class StudentResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "found the student", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Student.class)) }),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))) })
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(
             @Parameter(description = "id of student to be searched") @PathVariable("id") Long id,
@@ -108,7 +110,7 @@ public class StudentResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "student created", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Student.class)) }),
-            @ApiResponse(responseCode = "400", description = "Wrong Request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "400", description = "Wrong Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @PostMapping
     public ResponseEntity<Object> saveObject(
             @Parameter(description = "student object to be created") @Valid @RequestBody StudentDTOV objectDTOV,
@@ -134,8 +136,8 @@ public class StudentResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "student updated successfully", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Student.class)) }),
-            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateObject(
             @Parameter(description = "student object to be updated") @Valid @RequestBody StudentDTOV objectDTOV,

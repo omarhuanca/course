@@ -23,6 +23,7 @@ import com.ncoding.backend.test.course.core.Category;
 import com.ncoding.backend.test.course.service.CategoryService;
 import com.ncoding.backend.test.course.util.AElog;
 import com.ncoding.backend.test.course.util.AEutil;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomNotFoundException;
 import com.ncoding.backend.test.course.util.exception.response.custom.CustomRuntimeException;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -72,8 +73,8 @@ public class CategoryResource {
     @Operation(summary = "Get a category by category id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "found the category", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))) })
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> findById(
             @Parameter(description = "id of category to be searched") @PathVariable("id") Long id,
