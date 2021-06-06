@@ -11,6 +11,7 @@
 	<groupId>com.ncoding.backend.test</groupId>
 	<artifactId>course</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 	<name>course</name>
 	<description>evaluation</description>
 	<properties>
@@ -44,6 +45,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.5.2</version>
         </dependency>
 	</dependencies>
 
