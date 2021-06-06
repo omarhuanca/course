@@ -7,7 +7,7 @@ CREATE TABLE tsst_student (
   tsst_first_name       VARCHAR(70)             NOT NULL,
   tsst_last_name        VARCHAR(70)             NOT NULL,
   tsst_address          VARCHAR(500)                NULL,
-  tsst_mobile_phone     VARCHAR(11)                 NULL,
+  tsst_mobile_phone     VARCHAR(15)                 NULL,
   tsst_create_date      TIMESTAMP DEFAULT NOW() NOT NULL,
   tsst_last_update_date TIMESTAMP DEFAULT NOW() NOT NULL,
   PRIMARY KEY (tsst_uid)

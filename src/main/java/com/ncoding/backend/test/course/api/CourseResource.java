@@ -29,6 +29,8 @@ import com.ncoding.backend.test.course.dto.CourseDTOV;
 import com.ncoding.backend.test.course.service.CourseService;
 import com.ncoding.backend.test.course.util.AElog;
 import com.ncoding.backend.test.course.util.AEutil;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomNotFoundException;
 import com.ncoding.backend.test.course.util.exception.response.custom.CustomRuntimeException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,8 +81,8 @@ public class CourseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "found the course", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(
             @Parameter(description = "id of course to be searched") @PathVariable("id") Long id,
@@ -108,7 +110,7 @@ public class CourseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "course created", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
-            @ApiResponse(responseCode = "400", description = "Wrong Request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "400", description = "Wrong Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @PostMapping
     public ResponseEntity<Object> saveObject(
             @Parameter(description = "course object to be created") @Valid @RequestBody CourseDTOV objectDTOV,
@@ -134,8 +136,8 @@ public class CourseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Course.class)) }),
-            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateObject(
             @Parameter(description = "course object to be updated") @Valid @RequestBody CourseDTOV objectDTOV,
@@ -168,8 +170,8 @@ public class CourseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "course deleted", content = {
                     @Content(mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))),
-            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(schema = @Schema(implementation = CustomRuntimeException.class))) })
+            @ApiResponse(responseCode = "404", description = "Fail request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomNotFoundException.class))),
+            @ApiResponse(responseCode = "400", description = "Wrong request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomBadRequestException.class))) })
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteObject(
             @Parameter(description = "id of course to be deleted") @PathVariable("id") Long id,

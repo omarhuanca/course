@@ -42,13 +42,9 @@ public class StudentService {
     }
 
     public Boolean validateMobilePhone(String value) {
-        Boolean response = false;
-
         if (StringUtils.isBlank(value)) {
             return Boolean.TRUE;
         }
-        response = value.matches(SUBSCRIBER_CELLPHONE_REGEX);
-
-        return response;
+        return value.matches(SUBSCRIBER_CELLPHONE_REGEX);
     }
 }
