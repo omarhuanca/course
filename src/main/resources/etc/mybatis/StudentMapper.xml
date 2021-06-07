@@ -89,7 +89,7 @@
                AND tsst_status = #{recordStatus}
             </if>
             <if test="recordFirstName != null">
-               AND tsst_fist_name LIKE '%' || #{recordFirstName} || '%'
+               AND tsst_first_name LIKE '%' || #{recordFirstName} || '%'
             </if>
             <if test="recordLastName != null">
                AND tsst_last_name LIKE '%' || #{recordLastName} || '%'

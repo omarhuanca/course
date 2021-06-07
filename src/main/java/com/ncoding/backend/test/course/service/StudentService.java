@@ -15,8 +15,6 @@ import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadR
 @Service
 public class StudentService {
 
-    private final String SUBSCRIBER_CELLPHONE_REGEX = "^\\+[5]{1}[9]{1}[1]{1}[0-9]{8}$";
-
     @Autowired
     RStudentRepository repository;
 
@@ -36,7 +34,7 @@ public class StudentService {
 
     public Student save(Student object) throws RepositoryException {
         if (object.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
-            throw new CustomBadRequestException("The student is disable.");
+            throw new CustomBadRequestException(Student.DISABLE_OBJECT);
         }
         return repository.save(object);
     }
@@ -49,6 +47,6 @@ public class StudentService {
         if (StringUtils.isBlank(value)) {
             return Boolean.TRUE;
         }
-        return value.matches(SUBSCRIBER_CELLPHONE_REGEX);
+        return value.matches(Student.SUBSCRIBER_CELLPHONE_REGEX);
     }
 }

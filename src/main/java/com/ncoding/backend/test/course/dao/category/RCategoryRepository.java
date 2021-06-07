@@ -32,4 +32,9 @@ public class RCategoryRepository {
     public Integer getCountAllObjects(Optional<Integer> status, Optional<String> name) throws RepositoryException {
         return mapper.getCountAllRecords(status.orElse(null), name.orElse(null));
     }
+
+    public Category save(Category object) throws RepositoryException {
+        mapper.saveRecord(object);
+        return object;
+    }
 }

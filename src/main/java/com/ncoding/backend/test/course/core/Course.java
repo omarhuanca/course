@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class Course {
 
+    public static final String INVALID_STATUS = "The object status foreign key can not be disabled";
+
     private Long uid;
 
     private Category category;
