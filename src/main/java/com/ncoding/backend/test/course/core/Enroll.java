@@ -5,6 +5,8 @@ import java.util.Objects;
 
 public class Enroll {
 
+    public static final String DUPLICATE_RECORD = "The same student and same course can not be register more times";
+
     private Long uid;
 
     private Student student;

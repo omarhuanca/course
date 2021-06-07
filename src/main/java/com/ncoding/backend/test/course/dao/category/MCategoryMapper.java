@@ -19,4 +19,6 @@ public interface MCategoryMapper {
 
     public Integer getCountAllRecords(@Param("recordStatus") Integer recordStatus,
             @Param("recordName") String recordName) throws RepositoryException;
+
+    public Integer saveRecord(@Param("category") Category category) throws RepositoryException;
 }

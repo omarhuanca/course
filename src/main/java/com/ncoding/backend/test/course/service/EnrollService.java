@@ -40,8 +40,17 @@ public class EnrollService {
     }
 
     public Enroll save(Enroll object) throws RepositoryException {
+        Enroll response = new Enroll();
         this.verifyForeignKey(object);
-        return repository.save(object);
+
+        List<Enroll> filterEnroll = this.getAllObjects(Optional.of(ClassStatusEnum.ENABLE.getCode()), Optional.of(object.getStudent().getUid()), Optional.of(object.getCourse().getUid()), PaginationEnum.MAX_PAGE_SIZE.getCode(), PaginationEnum.DEFAULT_PAGE.getCode());
+        if (0 < filterEnroll.size()) {
+            new CustomBadRequestException(Enroll.DUPLICATE_RECORD);
+        } else {
+            response = repository.save(object);
+        }
+
+        return response;
     }
 
     public Enroll update(Enroll object) throws RepositoryException {

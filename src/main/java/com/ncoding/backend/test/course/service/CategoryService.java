@@ -3,6 +3,8 @@ package com.ncoding.backend.test.course.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ncoding.backend.test.course.core.Student;
+import com.ncoding.backend.test.course.util.exception.response.custom.CustomBadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,12 @@ public class CategoryService {
     public Integer getCountAllObjects(Optional<Integer> status, Optional<String> name)
             throws RepositoryException {
         return repository.getCountAllObjects(status, name);
+    }
+
+    public Category save(Category object) throws RepositoryException {
+        if (object.verifyStatusEnable(ClassStatusEnum.DISABLE.getCode())) {
+            throw new CustomBadRequestException(Student.DISABLE_OBJECT);
+        }
+        return repository.save(object);
     }
 }

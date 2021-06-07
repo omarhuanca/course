@@ -6,6 +6,9 @@ import java.util.Objects;
 
 public class Student {
 
+    public static final String DISABLE_OBJECT = "The student is disable.";
+    public static final String SUBSCRIBER_CELLPHONE_REGEX = "^\\+[5]{1}[9]{1}[1]{1}[0-9]{8}$";
+
     private Long uid;
 
     private Integer status;

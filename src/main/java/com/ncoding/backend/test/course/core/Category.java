@@ -5,6 +5,8 @@ import java.util.Objects;
 
 public class Category {
 
+    public static final String DISABLE_OBJECT = "The category is disable.";
+
     private Long uid;
 
     private Integer status;

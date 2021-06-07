@@ -68,4 +68,16 @@
             </if>
         </where>
     </sql>
+
+    <insert id="saveRecord" useGeneratedKeys="true" keyProperty="uid">
+        <![CDATA[
+            INSERT INTO tsct_category
+                       (tsct_uid,
+                        tsct_status,
+                        tsct_name)
+                VALUES (#{category.uid},
+                        #{category.status},
+                        #{category.name});
+        ]]>
+    </insert>
 </mapper>
